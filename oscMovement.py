@@ -73,7 +73,7 @@ async def full_turn(amount):
 
 async def jump(amount):
     if amount > 0:
-        for jump in range(amount):
+        for jumpIteration in range(amount):
             CLIENT.send_message("/input/Jump", 1)
             await asyncio.sleep(0.4)
             CLIENT.send_message("/input/Jump", 0)
@@ -120,7 +120,7 @@ number_words = {
 }
 
 compiled_commands = {re.compile(pattern, re.IGNORECASE): function for pattern, function in commands.items()}
-compiled_number_words = {re.compile(fr"\b(?:{words})\b", re.IGNORECASE): value for words, value in number_words.items()}
+compiled_number_words = {re.compile(fr"\b({words})\b", re.IGNORECASE): value for words, value in number_words.items()}
 
 
 async def listen_for_command():

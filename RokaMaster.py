@@ -60,7 +60,7 @@ async def main():
 
                     for i, segment in enumerate(segments):
                         await tts(segment, 'en_us_002', f"output{i}.mp3")
-                    await play_and_delete_sound_files(CLIENT, segments)
+                    await play_and_delete_sound_files(segments)
                     CLIENT.send_message("/chatbox/typing", False)
 
                     print(f"Roka: {response} | Request number: {number_of_requests}\n")

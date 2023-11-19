@@ -16,7 +16,8 @@ recognizer.pause_threshold = 1.15  # Silence threshold in Seconds
 timeout_duration = 10
 
 
-async def awooFace(CLIENT):
+async def awoo_face():
+    global CLIENT
     CLIENT.send_message("/avatar/parameters/Faces", 1)
     await asyncio.sleep(0.4)
     CLIENT.send_message("/avatar/parameters/Faces", 0)
@@ -52,7 +53,8 @@ async def convert_audio_to_text(audio):
     return None
 
 
-async def play_and_delete_sound_files(CLIENT, segments):
+async def play_and_delete_sound_files(segments):
+    global CLIENT
     # Read all audio files and store their data and samplerate
     audio_data = []
     file_index = 0
@@ -72,7 +74,7 @@ async def play_and_delete_sound_files(CLIENT, segments):
     # Play all audio files
     for file_index, (data, samplerate) in enumerate(audio_data):
         CLIENT.send_message("/chatbox/input", [segments[file_index], True])
-        await awooFace(CLIENT)
+        await awoo_face()
         sd.play(data, samplerate)
 
         # Delay for audio to play, len(data) / samplerate - wait_duration == audio duration

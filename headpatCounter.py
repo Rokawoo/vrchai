@@ -34,7 +34,6 @@ def increment_count():
     save_count()
     formatted_count = "{:,}".format(count)  # Format count with commas
     print(f"Count incremented: {formatted_count}")
-    # Add message to the queue
     with queue_lock:
         message_queue.append([f"Headpat Number: {formatted_count} >w< Awoo~!", True])
     new_message_event.set()  # Signal that a new message is available
@@ -103,7 +102,6 @@ def process_messages():
         new_message_event.clear()
 
 
-# Keep the program running until exited
 def headpat_listener():
     global pat_enabled, is_pat_enabled
     print("Listening For Headpats...")
