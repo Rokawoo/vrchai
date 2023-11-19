@@ -79,18 +79,12 @@ async def play_and_delete_sound_files(CLIENT, segments):
         await asyncio.sleep((len(data) / samplerate) - 0.6)
 
     # Delete all audio files after audio is done being played
-    try:
-        for i in range(file_index + 1):
-            file_to_delete = f"output{i}.mp3"
-            if os.path.exists(file_to_delete):
-                os.unlink(file_to_delete)
-    except FileNotFoundError:
-        pass
+    await delete_sound_files(file_index + 1)
 
 
-async def delete_sound_files():
+async def delete_sound_files(number_of_files):
     try:
-        for i in range(3):
+        for i in range(number_of_files):
             file_to_delete = f"output{i}.mp3"
             if os.path.exists(file_to_delete):
                 os.remove(file_to_delete)

@@ -86,7 +86,7 @@ async def main_loop():
     global CLIENT
     while True:
         try:
-            await delete_sound_files()
+            await delete_sound_files(3)
             await main()
         except Exception as e:
             cleanup()
