@@ -6,12 +6,12 @@ from discord_webhook import DiscordWebhook
 from dotenv import load_dotenv
 from pytz import timezone
 
+from controlVariables import ERROR_MESSAGE
+
 load_dotenv(dotenv_path="keys.env")
 webhook_url = os.getenv("DISCORD_WEBHOOK")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 personality = os.getenv("PERSONALITY")
-
-ERROR_MESSAGE = "Sorry woof, I don't know what to say at this time. Please give me a moment. >.>"
 
 
 def get_current_date():
@@ -20,7 +20,7 @@ def get_current_date():
 
 
 async def process_and_log_message_generate_response(message, date):
-    global personality, webhook_url, ERROR_MESSAGE
+    global personality, webhook_url
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
