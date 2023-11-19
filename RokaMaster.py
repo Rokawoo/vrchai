@@ -16,16 +16,13 @@ from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
 from VrChAI.stringProcessing import split_string, end_sentence
 from VrChAI.tiktockTts import tts
+from controlVariables import HOST, PORT, IDLE_MESSAGE
 
-HOST = "127.0.0.1"
-PORT = 9000
 CLIENT = SimpleUDPClient(HOST, PORT)
-
-IDLE_MESSAGE = "\U0001F9CD Stand in Front of Me              \U0001F4AC Talk to Me                               \U0001F507 Give Me Silence to Think                    \u2753 'Help Menu'"
 
 
 async def main():
-    global CLIENT, IDLE_MESSAGE
+    global CLIENT
     date = get_current_date()
 
     number_of_requests = 1

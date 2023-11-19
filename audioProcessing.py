@@ -6,8 +6,8 @@ import soundfile as sf
 import speech_recognition as sr
 from pythonosc.udp_client import SimpleUDPClient
 
-HOST = "127.0.0.1"
-PORT = 9000
+from controlVariables import HOST, PORT
+
 CLIENT = SimpleUDPClient(HOST, PORT)
 
 recognizer = sr.Recognizer()

@@ -5,8 +5,8 @@ from collections import deque
 from pythonosc import dispatcher, osc_server
 from pythonosc.udp_client import SimpleUDPClient
 
-HOST = "127.0.0.1"
-PORT = 9000
+from controlVariables import HOST, PORT
+
 CLIENT = SimpleUDPClient(HOST, PORT)
 
 TARGET_ADDRESS = "/avatar/parameters/Pat"
@@ -14,10 +14,11 @@ COUNT_FILE_PATH = "count.txt"
 
 MAX_QUEUE_SIZE = 1
 
+is_pat_enabled = None
+
 
 def handle_message(address, *args):
-    global is_pat_enabled
-    global TARGET_ADDRESS
+    global TARGET_ADDRESS, is_pat_enabled
     if address == TARGET_ADDRESS:
         if args and args[0] == 0:  # Check if the pat is disabled 0 | 1
             if is_pat_enabled:
@@ -104,7 +105,7 @@ def process_messages():
 
 # Keep the program running until exited
 def headpat_listener():
-    global pat_enabled
+    global pat_enabled, is_pat_enabled
     print("Listening For Headpats...")
     is_pat_enabled = True  # Flag to track pat status
     try:

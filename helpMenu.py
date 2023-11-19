@@ -4,24 +4,21 @@ import re
 from pythonosc.udp_client import SimpleUDPClient
 
 from VrChAI.audioProcessing import active_listening, convert_audio_to_text
+from controlVariables import HOST, PORT, MENU_MESSAGE, INSTRUCTIONS_MESSAGE, COMMANDS_MESSAGE, ABOUT_MESSAGE
 
-HOST = "127.0.0.1"
-PORT = 9000
 CLIENT = SimpleUDPClient(HOST, PORT)
-
-MENU_MESSAGE = "\u26A0 'Instructions'                              \U0001F6B6 'Commands'                             \u2753 'About Me'                              \u26D4 'Exit'"
 
 # Walk Forward / Backward / Left / Right 1-5 || Turn Left / Right / Around || 💃 Dance | 🌪 Spin | 🦘 Jump | 💬 Speak
 KEYWORD_ACTIONS = {
     re.compile(r"\bexit\b", re.IGNORECASE): None,
     re.compile(r"\binstruction(s)?\b", re.IGNORECASE): (
-        "\U0001F9CD Stand in Front of Me              \U0001F4AC Talk to Me                               \U0001F507 Give Me a Moment of Silence to Think",
+        INSTRUCTIONS_MESSAGE,
         10),
     re.compile(r"\bcommand(s)?\b", re.IGNORECASE): (
-        "'Walk ⬆ / ⬇ / ⬅️ / ➡️ 1-5',               'Turn ↪ / ↩ / 🔄 Around',          '🕺 Dance', '🌪 Spin', '🦘 Jump', '💬 Speak'",
+        COMMANDS_MESSAGE,
         15),
     re.compile(r"\babout\b", re.IGNORECASE): (
-        "Hi hi! I've placed an auto-response script in my brain so I can spend time with my friends. Thank you for talking to Roka.",
+        ABOUT_MESSAGE,
         10)
 }
 

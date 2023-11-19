@@ -6,12 +6,9 @@ import speech_recognition as sr
 from pythonosc.udp_client import SimpleUDPClient
 
 from VrChAI.audioProcessing import active_listening, convert_audio_to_text
+from controlVariables import HOST, PORT, MOVE_MESSAGE
 
-HOST = "127.0.0.1"
-PORT = 9000
 CLIENT = SimpleUDPClient(HOST, PORT)
-
-MOVE_MESSAGE = "\U0001F6B6 Ready to Move~!"
 
 
 async def forward_move(amount):
@@ -127,7 +124,6 @@ compiled_number_words = {re.compile(fr"\b(?:{words})\b", re.IGNORECASE): value f
 
 
 async def listen_for_command():
-    global MOVE_MESSAGE
     try:
         print("Listening for a command...")
         audio = await active_listening(MOVE_MESSAGE)
