@@ -36,9 +36,9 @@ def end_sentence(input_string):
     Returns:
     - str: The modified input string.
     """
-    punctuation_set = ('<', '^', '~', '.', '?', '!')
+    punctuation_set = {'<', '>', '^', '~', '.', '?', '!'}
 
-    faces_to_keep = ('Awoof~!', '>w<', '^w^', '^^', '>.<', '>//w//<', '>w<', '^w^', '^^', '>.<', '^^')
+    faces_to_keep = {'Awoof~!', '>w<', '^w^', '^^', '>.<', '>//w//<', '>.>'}
 
     last_punctuation_index = max(input_string.rfind(p) for p in punctuation_set)
 
