@@ -18,6 +18,16 @@ is_pat_enabled = None
 
 
 def handle_message(address, *args):
+    """
+    Handle messages received from the OSC server.
+
+    Parameters:
+    - address (str): The OSC address of the received message.
+    - *args: Variable number of arguments received in the message.
+
+    Returns:
+    - None
+    """
     global TARGET_ADDRESS, is_pat_enabled
     if address == TARGET_ADDRESS:
         if args and args[0] == 0:  # Check if the pat is disabled 0 | 1
@@ -29,6 +39,12 @@ def handle_message(address, *args):
 
 
 def increment_count():
+    """
+    Increment the pat count, save it, and add a new message to the queue.
+
+    Returns:
+    - None
+    """
     global count
     count += 1
     save_count()
@@ -40,12 +56,24 @@ def increment_count():
 
 
 def save_count():
+    """
+    Save the current count to a file.
+
+    Returns:
+    - None
+    """
     global COUNT_FILE_PATH
     with open(COUNT_FILE_PATH, "w") as file:
         file.write(str(count))
 
 
 def load_count():
+    """
+    Load the count from a file.
+
+    Returns:
+    - int: The loaded count or 0 if the file is not found.
+    """
     global COUNT_FILE_PATH
     try:
         with open(COUNT_FILE_PATH, "r") as file:
@@ -83,6 +111,12 @@ pat_enabled = threading.Condition()
 
 # Function to process and send messages from the queue
 def process_messages():
+    """
+    Process and send messages from the queue to the chatbox.
+
+    Returns:
+    - None
+    """
     global CLIENT, server, queue_lock, new_message_event, message_queue, count
 
     while True:
@@ -103,6 +137,12 @@ def process_messages():
 
 
 def headpat_listener():
+    """
+    Listen for headpats and toggle the is_pat_enabled flag accordingly.
+
+    Returns:
+    - None
+    """
     global pat_enabled, is_pat_enabled
     print("Listening For Headpats...")
     is_pat_enabled = True  # Flag to track pat status
@@ -124,6 +164,12 @@ def headpat_listener():
 
 
 def cleanup():
+    """
+    Shut down the OSC server and join the server and message threads.
+
+    Returns:
+    - None
+    """
     global server
     server.shutdown()
     server_thread.join()
@@ -132,6 +178,12 @@ def cleanup():
 
 # Start the headpat listener in a separate thread
 def start_headpat_listener():
+    """
+    Start the headpat listener and related threads.
+
+    Returns:
+    - None
+    """
     global server_thread, message_thread
     # Start the UDP server and the message processing thread in separate threads
     server_thread = threading.Thread(target=server.serve_forever)

@@ -123,23 +123,16 @@ compiled_commands = {re.compile(pattern, re.IGNORECASE): function for pattern, f
 compiled_number_words = {re.compile(fr"\b({words})\b", re.IGNORECASE): value for words, value in number_words.items()}
 
 
-async def listen_for_command():
-    try:
-        print("Listening for a command...")
-        audio = await active_listening(MOVE_MESSAGE)
-
-        if audio is not None:
-            text = await convert_audio_to_text(audio)
-            print("Recognized speech:", text)
-
-            await process_command(text)
-            print()
-
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
-
 async def process_command(text):
+    """
+    Process the recognized text and execute the corresponding action.
+
+    Parameters:
+    - text (str): The recognized text.
+
+    Returns:
+    - None
+    """
     global compiled_commands
     for pattern, function in compiled_commands.items():
         if pattern.search(text):
@@ -152,6 +145,15 @@ async def process_command(text):
 
 
 def extract_number(text):
+    """
+    Extract a numerical value from the recognized text.
+
+    Parameters:
+    - text (str): The recognized text.
+
+    Returns:
+    - float: The extracted numerical value.
+    """
     global compiled_number_words
     for pattern, value in compiled_number_words.items():
         if pattern.search(text):
@@ -169,4 +171,26 @@ async def main():
 
 
 if __name__ == "__main__":
+    async def listen_for_command():
+        """
+        Listen for a voice command and execute the corresponding action.
+
+        Returns:
+        - None
+        """
+        try:
+            print("Listening for a command...")
+            audio = await active_listening(MOVE_MESSAGE)
+
+            if audio is not None:
+                text = await convert_audio_to_text(audio)
+                print("Recognized speech:", text)
+
+                await process_command(text)
+                print()
+
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
+
     asyncio.run(main())

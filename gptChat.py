@@ -15,11 +15,27 @@ personality = os.getenv("PERSONALITY")
 
 
 def get_current_date():
+    """
+    Get the current date and time in the 'US/Eastern' timezone.
+
+    Returns:
+    - str: The formatted current date and time.
+    """
     timezone_obj = timezone('US/Eastern')
     return f'Today is {datetime.now(timezone_obj).strftime("%a %B %d %Y, %H:%M")}'
 
 
 async def process_and_log_message_generate_response(message, date):
+    """
+    Process a user message, generate a response using OpenAI ChatCompletion, and log the interaction.
+
+    Parameters:
+    - message (str): The user's message.
+    - date (str): The current date and time.
+
+    Returns:
+    - str: The generated response from OpenAI ChatCompletion or an error message.
+    """
     global personality, webhook_url
     try:
         response = openai.ChatCompletion.create(

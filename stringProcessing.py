@@ -1,4 +1,13 @@
 def split_string(text):
+    """
+    Split a long text string into segments based on a maximum segment length.
+
+    Parameters:
+    - text (str): The input text to be split.
+
+    Returns:
+    - list: A list of segments.
+    """
     words = text.split()
     segments = []
     current_segment = []
@@ -18,6 +27,15 @@ def split_string(text):
 
 
 def end_sentence(input_string):
+    """
+    Ensure that the given input string ends with an appropriate face or expression.
+
+    Parameters:
+    - input_string (str): The input string to be modified.
+
+    Returns:
+    - str: The modified input string.
+    """
     punctuation_set = ('<', '^', '~', '.', '?', '!')
 
     faces_to_keep = ('Awoof~!', '>w<', '^w^', '^^', '>.<', '>//w//<', '>w<', '^w^', '^^', '>.<', '^^')

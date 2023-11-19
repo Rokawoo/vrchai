@@ -2,6 +2,15 @@ import asyncio
 
 
 async def generateUwU(input_text):
+    """
+    UwU'ifies the input text by applying specific character transformations.
+
+    Parameters:
+    - input_text (str): The text to be UwU'ified.
+
+    Returns:
+    - str: The UwU'ified text.
+    """
     transformed_text = []
     previous_char = '&# 092;&# 048;'
 

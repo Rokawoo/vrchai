@@ -18,6 +18,12 @@ KEYWORD_ACTIONS = {
 
 
 async def help_menu():
+    """
+    Activate the help menu, listen for user commands, and execute corresponding actions.
+
+    Returns:
+    - None
+    """
     print("Help menu activated!")
 
     while True:

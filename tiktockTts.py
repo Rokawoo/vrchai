@@ -76,6 +76,12 @@ session = httpx.AsyncClient(follow_redirects=True)
 
 # checking if the website that provides the service is available
 async def get_api_response() -> httpx.Response:
+    """
+    Sends a GET request to check if the TTS service endpoint is available.
+
+    Returns:
+    - httpx.Response: The response from the TTS service endpoint.
+    """
     global ENDPOINTS, current_endpoint
     url = f'{ENDPOINTS[current_endpoint].split("/a")[0]}'
     response = await session.get(url)
@@ -84,6 +90,13 @@ async def get_api_response() -> httpx.Response:
 
 # saving the audio file
 def save_audio_file(base64_data: str, filename: str = "output.mp3") -> None:
+    """
+    Saves the audio file from base64 data to the specified filename.
+
+    Parameters:
+    - base64_data (str): The base64-encoded audio data.
+    - filename (str): The name of the output audio file.
+    """
     audio_bytes = base64.b64decode(base64_data)
     with open(filename, "wb") as file:
         file.write(audio_bytes)
@@ -91,6 +104,17 @@ def save_audio_file(base64_data: str, filename: str = "output.mp3") -> None:
 
 # send POST request to get the audio data
 async def generate_audio(text: str, voice: str, speed: float = 1.0) -> bytes:
+    """
+    Generates audio data using the TTS service.
+
+    Parameters:
+    - text (str): The text to be converted to speech.
+    - voice (str): The voice to use for the speech.
+    - speed (float): The speed of the speech.
+
+    Returns:
+    - bytes: The generated audio data.
+    """
     global ENDPOINTS, current_endpoint
     url = f'{ENDPOINTS[current_endpoint]}'
     headers = {'Content-Type': 'application/json'}
@@ -100,6 +124,20 @@ async def generate_audio(text: str, voice: str, speed: float = 1.0) -> bytes:
 
 
 async def generate_audio_task(text_part, loop, executor, voice, text, filename):
+    """
+    Asynchronous task to generate audio for a text part.
+
+    Parameters:
+    - text_part (str): The part of the text to generate audio for.
+    - loop (asyncio.AbstractEventLoop): The asyncio event loop.
+    - executor (ThreadPoolExecutor): The executor for running synchronous functions.
+    - voice (str): The voice to use for the speech.
+    - text (str): The complete text.
+    - filename (str): The name of the output audio file.
+
+    Returns:
+    - str: The base64-encoded audio data for the text part.
+    """
     global current_endpoint
     audio = await loop.run_in_executor(executor, generate_audio, text_part, voice)
     if current_endpoint == 0:
@@ -117,6 +155,17 @@ async def generate_audio_task(text_part, loop, executor, voice, text, filename):
 
 # creates a text to speech audio file
 async def tts(text: str, voice: str = "none", filename: str = "output.mp3") -> None:
+    """
+    Converts text to speech and saves it to an audio file.
+
+    Parameters:
+    - text (str): The text to be converted to speech.
+    - voice (str): The voice to use for the speech.
+    - filename (str): The name of the output audio file.
+
+    Returns:
+    - None
+    """
     global current_endpoint
 
     # Checking if the website is available
@@ -172,6 +221,16 @@ engine.setProperty('rate', 190)  # Words per minute
 
 
 async def save_string_with_tts(text, output_file):
+    """
+    Reads the input string using TTS and saves it to a file.
+
+    Parameters:
+    - text (str): The text to be read and saved.
+    - output_file (str): The name of the output audio file.
+
+    Returns:
+    - None
+    """
     global engine
     # Read the string using TTS and save to file
     engine.save_to_file(text, output_file)

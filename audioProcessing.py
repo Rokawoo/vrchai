@@ -17,6 +17,12 @@ timeout_duration = 10
 
 
 async def awoo_face():
+    """
+    Trigger an "awoo" facial expression for the avatar.
+
+    Returns:
+    - None
+    """
     global CLIENT
     CLIENT.send_message("/avatar/parameters/Faces", 1)
     await asyncio.sleep(0.4)
@@ -24,6 +30,15 @@ async def awoo_face():
 
 
 async def active_listening(message):
+    """
+    Perform active listening to capture audio from the microphone.
+
+    Parameters:
+    - message (str): The message to be sent to the chatbox.
+
+    Returns:
+    - AudioData or None: The captured audio data or None if an error occurs.
+    """
     global CLIENT, recognizer, timeout_duration
     try:
         with sr.Microphone() as source:
@@ -40,6 +55,15 @@ async def active_listening(message):
 
 
 async def convert_audio_to_text(audio):
+    """
+    Convert audio data to text using Google Speech Recognition.
+
+    Parameters:
+    - audio (AudioData): The audio data to be recognized.
+
+    Returns:
+    - str or None: The recognized text or None if an error occurs.
+    """
     global recognizer
     try:
         print("Recognizing...")
@@ -54,6 +78,15 @@ async def convert_audio_to_text(audio):
 
 
 async def play_and_delete_sound_files(segments):
+    """
+    Play audio files and trigger "awoo" facial expressions during playback.
+
+    Parameters:
+    - segments (list of str): List of segments to be sent to the chatbox.
+
+    Returns:
+    - None
+    """
     global CLIENT
     # Read all audio files and store their data and samplerate
     audio_data = []
@@ -85,6 +118,15 @@ async def play_and_delete_sound_files(segments):
 
 
 async def delete_sound_files(number_of_files):
+    """
+    Delete audio files.
+
+    Parameters:
+    - number_of_files (int): The number of audio files to be deleted.
+
+    Returns:
+    - None
+    """
     try:
         for i in range(number_of_files):
             file_to_delete = f"output{i}.mp3"
