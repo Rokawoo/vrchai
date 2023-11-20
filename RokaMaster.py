@@ -16,7 +16,7 @@ from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
 from VrChAI.stringProcessing import split_string, end_sentence
 from VrChAI.tiktockTts import tts
-from controlVariables import HOST, PORT, IDLE_MESSAGE
+from controlVariables import HOST, PORT, IDLE_MESSAGE, BOOTING_MESSAGE, RESTARTING_MESSAGE, TERMINATION_MESSAGE
 
 CLIENT = SimpleUDPClient(HOST, PORT)
 
@@ -28,7 +28,6 @@ async def main():
     number_of_requests = 1
 
     in_progress = False
-    print("Booting Roka...")
     while True:
         audio = await active_listening(IDLE_MESSAGE)
 
@@ -84,17 +83,26 @@ async def main_loop():
     while True:
         try:
             await delete_sound_files(3)
+            print(BOOTING_MESSAGE)
+            CLIENT.send_message("/chatbox/input", [BOOTING_MESSAGE, True])
+            start_headpat_listener()
             await main()
+
         except Exception as e:
-            cleanup()
-            print(f"An exception occurred: {e}. \nRestarting Roka...\n")
+            print(f"An exception occurred: {e}. \n{RESTARTING_MESSAGE}\n")
             CLIENT.send_message(
-                "/chatbox/input", [f"An exception occurred: {e}.                           Restarting Roka...", True])
+                "/chatbox/input", [f"An exception occurred: {e}.                           {RESTARTING_MESSAGE}", True])
+
+        except KeyboardInterrupt:
+            print(TERMINATION_MESSAGE)
+            CLIENT.send_message("/chatbox/input", [TERMINATION_MESSAGE, True])
+            break
+
+        finally:
+            cleanup()
 
 
 if __name__ == "__main__":
-    start_headpat_listener()
-
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # Needed on Windows
 
     asyncio.run(main_loop())  # Use asyncio.run() to run the main function loop

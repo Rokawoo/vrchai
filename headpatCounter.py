@@ -5,7 +5,7 @@ from collections import deque
 from pythonosc import dispatcher, osc_server
 from pythonosc.udp_client import SimpleUDPClient
 
-from controlVariables import HOST, PORT
+from controlVariables import HOST, PORT, LISTENING_PORT
 
 CLIENT = SimpleUDPClient(HOST, PORT)
 
@@ -87,11 +87,11 @@ dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(handle_message)
 
 # Create a UDP server to receive messages
-server = osc_server.ThreadingOSCUDPServer(("localhost", 9001), dispatcher)
+server = osc_server.ThreadingOSCUDPServer((HOST, LISTENING_PORT), dispatcher)
 
 server_thread = None
-
 message_thread = None
+headpat_thread = None
 
 # Create a lock for protecting the message queue access
 queue_lock = threading.Lock()
@@ -170,10 +170,18 @@ def cleanup():
     Returns:
     - None
     """
-    global server
-    server.shutdown()
-    server_thread.join()
-    message_thread.join()
+    global server, server_thread, message_thread, headpat_thread
+    try:
+        server.shutdown()
+    except Exception as e:
+        print(f"Error during server shutdown: {e}")
+
+    try:
+        server_thread.join(timeout=5)
+        message_thread.join(timeout=1.5)
+        headpat_thread.join(timeout=1.5)
+    except Exception as e:
+        print(f"Error during thread join: {e}")
 
 
 # Start the headpat listener in a separate thread
@@ -184,16 +192,16 @@ def start_headpat_listener():
     Returns:
     - None
     """
-    global server_thread, message_thread
+    global server_thread, message_thread, headpat_thread
     # Start the UDP server and the message processing thread in separate threads
-    server_thread = threading.Thread(target=server.serve_forever)
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
     server_thread.start()
 
-    message_thread = threading.Thread(target=process_messages)
+    message_thread = threading.Thread(target=process_messages, daemon=True)
     message_thread.start()
 
     # Start the headpat listener in a separate thread
-    headpat_thread = threading.Thread(target=headpat_listener)
+    headpat_thread = threading.Thread(target=headpat_listener, daemon=True)
     headpat_thread.start()
 
 
