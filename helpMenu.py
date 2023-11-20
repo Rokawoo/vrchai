@@ -8,7 +8,6 @@ from controlVariables import HOST, PORT, MENU_MESSAGE, INSTRUCTIONS_MESSAGE, COM
 
 CLIENT = SimpleUDPClient(HOST, PORT)
 
-# Walk Forward / Backward / Left / Right 1-5 || Turn Left / Right / Around || 💃 Dance | 🌪 Spin | 🦘 Jump | 💬 Speak
 KEYWORD_ACTIONS = {
     re.compile(r"\bexit\b", re.IGNORECASE): None,
     re.compile(r"\binstruction(s)?\b", re.IGNORECASE): (INSTRUCTIONS_MESSAGE, 10),

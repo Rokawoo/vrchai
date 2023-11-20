@@ -105,4 +105,4 @@ async def main_loop():
 if __name__ == "__main__":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # Needed on Windows
 
-    asyncio.run(main_loop())  # Use asyncio.run() to run the main function loop
+    asyncio.run(main_loop())

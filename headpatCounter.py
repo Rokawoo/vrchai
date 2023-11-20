@@ -89,6 +89,7 @@ dispatcher.set_default_handler(handle_message)
 # Create a UDP server to receive messages
 server = osc_server.ThreadingOSCUDPServer((HOST, LISTENING_PORT), dispatcher)
 
+# Thread Buckets
 server_thread = None
 message_thread = None
 headpat_thread = None
@@ -109,7 +110,6 @@ count = load_count()
 pat_enabled = threading.Condition()
 
 
-# Function to process and send messages from the queue
 def process_messages():
     """
     Process and send messages from the queue to the chatbox.
@@ -184,7 +184,6 @@ def cleanup():
         print(f"Error during thread join: {e}")
 
 
-# Start the headpat listener in a separate thread
 def start_headpat_listener():
     """
     Start the headpat listener and related threads.
@@ -200,7 +199,6 @@ def start_headpat_listener():
     message_thread = threading.Thread(target=process_messages, daemon=True)
     message_thread.start()
 
-    # Start the headpat listener in a separate thread
     headpat_thread = threading.Thread(target=headpat_listener, daemon=True)
     headpat_thread.start()
 

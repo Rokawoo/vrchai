@@ -74,7 +74,6 @@ TEXT_BYTE_LIMIT = 300
 session = httpx.AsyncClient(follow_redirects=True)
 
 
-# checking if the website that provides the service is available
 async def get_api_response() -> httpx.Response:
     """
     Sends a GET request to check if the TTS service endpoint is available.
@@ -88,7 +87,6 @@ async def get_api_response() -> httpx.Response:
     return response
 
 
-# saving the audio file
 def save_audio_file(base64_data: str, filename: str = "output.mp3") -> None:
     """
     Saves the audio file from base64 data to the specified filename.
@@ -102,7 +100,6 @@ def save_audio_file(base64_data: str, filename: str = "output.mp3") -> None:
         file.write(audio_bytes)
 
 
-# send POST request to get the audio data
 async def generate_audio(text: str, voice: str, speed: float = 1.0) -> bytes:
     """
     Generates audio data using the TTS service.
@@ -118,7 +115,7 @@ async def generate_audio(text: str, voice: str, speed: float = 1.0) -> bytes:
     global ENDPOINTS, current_endpoint
     url = f'{ENDPOINTS[current_endpoint]}'
     headers = {'Content-Type': 'application/json'}
-    data = {'text': text, 'voice': voice, 'speed': speed}  # Add 'speed' parameter
+    data = {'text': text, 'voice': voice, 'speed': speed}
     response = await session.post(url, headers=headers, json=data)
     return response.content
 
@@ -153,7 +150,6 @@ async def generate_audio_task(text_part, loop, executor, voice, text, filename):
     return base64_data
 
 
-# creates a text to speech audio file
 async def tts(text: str, voice: str = "none", filename: str = "output.mp3") -> None:
     """
     Converts text to speech and saves it to an audio file.
@@ -197,7 +193,7 @@ async def tts(text: str, voice: str = "none", filename: str = "output.mp3") -> N
                 return
         else:
             # Split longer text into smaller parts
-            text_parts = textwrap.wrap(text, 299)  # Split text into chunks
+            text_parts = textwrap.wrap(text, 299)
 
             loop = asyncio.get_event_loop()
             executor = ThreadPoolExecutor()
@@ -232,7 +228,6 @@ async def save_string_with_tts(text, output_file):
     - None
     """
     global engine
-    # Read the string using TTS and save to file
     engine.save_to_file(text, output_file)
     engine.runAndWait()
 
