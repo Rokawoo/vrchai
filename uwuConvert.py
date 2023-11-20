@@ -1,7 +1,7 @@
 import asyncio
 
 
-async def generateUwU(input_text):
+async def generate_uwu(input_text):
     """
     UwU'ifies the input text by applying specific character transformations.
 
@@ -44,16 +44,15 @@ async def generateUwU(input_text):
 # Driver code
 if __name__ == '__main__':
     from pythonosc.udp_client import SimpleUDPClient
+    from controlVariables import HOST, PORT
 
 
     async def main():
-        HOST = "127.0.0.1"
-        PORT = 9000
         CLIENT = SimpleUDPClient(HOST, PORT)
 
         while True:
             input_text = input("Enter your text to UwU'ify: ")
-            uwu_text = await generateUwU(input_text)
+            uwu_text = await generate_uwu(input_text)
             CLIENT.send_message("/chatbox/input", [uwu_text, True])
             print(input_text)
             print(uwu_text)

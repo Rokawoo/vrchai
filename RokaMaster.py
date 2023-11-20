@@ -53,7 +53,7 @@ async def main():
                         continue
 
                     response = await process_and_log_message_generate_response(text, date)
-                    # response = await generateUwU(response)
+                    # response = await generate_uwu(response)
                     response = end_sentence(response)
                     segments = split_string(response) if len(response) > 144 else [response]
 
