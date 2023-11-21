@@ -1,7 +1,38 @@
 """
-Purpose: R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text Chat Bot for VrChat
-Author: Rokawoo Woof
-Last Updated: 9/25/2023
+File: RokaMaster.py
+
+Purpose:
+    R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text Chat Bot for VrChat
+
+Author:
+    Augustus SRoka
+
+Last Updated:
+    11/20/2023
+
+Description:
+    This Python script implements the R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text Chat Bot for VrChat.
+    It utilizes asyncio for asynchronous operations and integrates various modules for audio processing, GPT-based chat,
+    headpat counting, OSC movement, and more. The bot actively listens for user input, processes speech to text, and
+    responds using text-to-speech synthesis.
+
+Dependencies:
+    - pythonosc
+    - VrChAI.audioProcessing
+    - VrChAI.gptChat
+    - VrChAI.headpatCounter
+    - VrChAI.helpMenu
+    - VrChAI.oscMovement
+    - VrChAI.stringProcessing
+    - VrChAI.tiktockTts
+    - controlVariables
+
+Usage:
+    Run the script to start the R.o.k.a. Speech to Text Chat Bot for VrChat. The bot listens for user commands, responds,
+    and performs various tasks based on the input.
+
+Note:
+    Ensure all dependencies are installed before running the script.
 """
 
 import asyncio

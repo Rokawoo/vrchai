@@ -1,3 +1,55 @@
+"""
+File: ocsMovement.py
+
+Description:
+    This Python script provides functionality for executing movement commands based on voice input in a virtual
+    environment, such as VrChat. It uses the 'pythonosc' library for sending OSC messages, 'asyncio' for asynchronous
+    operations, 'speech_recognition' for speech recognition, and 'VrChAI.audioProcessing' for active listening and
+    speech-to-text conversion.
+
+Dependencies:
+    - asyncio
+    - random
+    - re
+    - speech_recognition
+    - pythonosc.udp_client.SimpleUDPClient
+    - VrChAI.audioProcessing.active_listening
+    - VrChAI.audioProcessing.convert_audio_to_text
+    - controlVariables.HOST
+    - controlVariables.PORT
+    - controlVariables.MOVE_MESSAGE
+
+Global Variables:
+    - CLIENT: The SimpleUDPClient for sending OSC messages.
+    - commands: A dictionary mapping regular expressions to corresponding movement commands.
+    - number_words: A dictionary mapping words to their numerical values.
+    - compiled_commands: A dictionary mapping compiled regular expressions to corresponding movement functions.
+    - compiled_number_words: A dictionary mapping compiled regular expressions to numerical values.
+
+Functions:
+    - forward_move(amount): Move forward by the specified amount.
+    - backward_move(amount): Move backward by the specified amount.
+    - left_move(amount): Move left by the specified amount.
+    - right_move(amount): Move right by the specified amount.
+    - left_turn(amount): Turn left by the specified amount.
+    - right_turn(amount): Turn right by the specified amount.
+    - half_turn(amount): Make a half turn.
+    - full_turn(amount): Make a full turn.
+    - jump(amount): Perform a jump.
+    - dance(amount): Perform a dance animation.
+    - awoo(amount): Trigger an "awoo" facial expression for the avatar.
+    - process_command(text): Process the recognized text and execute the corresponding action.
+    - extract_number(text): Extract a numerical value from the recognized text.
+    - main(): The main function for continuous listening and command execution.
+    - listen_for_command(): Listen for a voice command and execute the corresponding action.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import asyncio
 import random
 import re

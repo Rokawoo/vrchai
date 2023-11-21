@@ -1,3 +1,42 @@
+"""
+File: tiktockTts.py
+
+Description:
+    This Python script provides functionality for text-to-speech (TTS) conversion using various voices and TTS service
+    endpoints. It utilizes the 'pyttsx4' library for local TTS and asynchronous HTTP requests with 'httpx' for online TTS.
+    The script allows generating audio from text, selecting different voices, and saving the output to audio files.
+
+Dependencies:
+    - asyncio
+    - base64
+    - textwrap
+    - concurrent.futures.ThreadPoolExecutor
+    - httpx
+    - pyttsx4
+
+Global Variables:
+    - VOICES: List of available voices for TTS, including Disney voices, English voices, European voices, American voices,
+              Asian voices, singing voices, and others.
+    - ENDPOINTS: List of TTS service endpoints for online TTS generation.
+    - current_endpoint: Index indicating the currently used TTS service endpoint.
+    - TEXT_BYTE_LIMIT: Maximum byte limit for text when using the TTS service.
+    - session: Asynchronous HTTP client session for making requests to TTS service endpoints.
+
+Functions:
+    - get_api_response() -> httpx.Response: Sends a GET request to check if the TTS service endpoint is available.
+    - save_audio_file(base64_data: str, filename: str = "output.mp3") -> None: Saves the audio file from base64 data.
+    - generate_audio(text: str, voice: str, speed: float = 1.0) -> bytes: Generates audio data using the TTS service.
+    - generate_audio_task(text_part, loop, executor, voice, text, filename) -> str: Asynchronous task to generate audio for a text part.
+    - tts(text: str, voice: str = "none", filename: str = "output.mp3") -> None: Converts text to speech and saves it to an audio file.
+    - save_string_with_tts(text, output_file) -> None: Reads the input string using TTS and saves it to a file.
+
+Author:
+    Augustus SRoka
+
+Last Updated:
+    10/20/2023
+"""
+
 import asyncio
 import base64
 import textwrap

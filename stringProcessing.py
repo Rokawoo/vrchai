@@ -1,3 +1,25 @@
+"""
+File: stringProcessing.py
+
+Description:
+    This Python file contains functions for text processing. Specifically, it defines the functions 'split_string' and
+    'end_sentence'. The 'split_string' function takes a long text string as input and splits it into segments based on a
+    maximum segment length. The 'end_sentence' function ensures that a given input string ends with an appropriate face or
+    expression.
+
+Functions:
+    - split_string(text: str) -> list: Split a long text string into segments based on a maximum segment length.
+
+    - end_sentence(input_string: str) -> str: Ensure that the given input string ends with an appropriate face or expression.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
+
 def split_string(text):
     """
     Split a long text string into segments based on a maximum segment length.

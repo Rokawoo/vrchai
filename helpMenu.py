@@ -1,3 +1,38 @@
+"""
+File: helpMenu.py
+
+Description:
+    This Python script implements a help menu for a virtual chatbot in VrChat. It utilizes the 'pythonosc' library for
+    sending OSC messages, 'asyncio' for asynchronous operations, and 'VrChAI.audioProcessing' for active listening and
+    speech-to-text conversion.
+
+Dependencies:
+    - asyncio
+    - re
+    - pythonosc.udp_client.SimpleUDPClient
+    - VrChAI.audioProcessing.active_listening
+    - VrChAI.audioProcessing.convert_audio_to_text
+    - controlVariables.HOST
+    - controlVariables.PORT
+    - controlVariables.MENU_MESSAGE
+    - controlVariables.INSTRUCTIONS_MESSAGE
+    - controlVariables.COMMANDS_MESSAGE
+    - controlVariables.ABOUT_MESSAGE
+
+Global Variables:
+    - CLIENT: The SimpleUDPClient for sending OSC messages.
+    - KEYWORD_ACTIONS: A dictionary mapping regular expressions to corresponding actions in the help menu.
+
+Functions:
+    - help_menu() -> None: Activate the help menu, listen for user commands, and execute corresponding actions.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import asyncio
 import re
 

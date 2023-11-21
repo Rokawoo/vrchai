@@ -1,3 +1,36 @@
+"""
+File: gptChat.py
+
+Description:
+    This Python script provides functions for processing user messages, generating responses using OpenAI ChatCompletion,
+    and logging interactions. It utilizes the 'openai', 'discord_webhook', 'dotenv', and 'pytz' libraries.
+
+Dependencies:
+    - os
+    - datetime
+    - openai
+    - discord_webhook.DiscordWebhook
+    - dotenv.load_dotenv
+    - pytz.timezone
+    - controlVariables.ERROR_MESSAGE
+
+Global Variables:
+    - webhook_url: The Discord webhook URL for logging interactions.
+    - openai.api_key: The API key for OpenAI ChatCompletion.
+    - personality: The personality setting for the assistant.
+
+Functions:
+    - get_current_date() -> str: Get the current date and time in the 'US/Eastern' timezone.
+    - process_and_log_message_generate_response(message: str, date: str) -> str: Process a user message, generate a response
+                                                                               using OpenAI ChatCompletion, and log the interaction.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import os
 from datetime import datetime
 

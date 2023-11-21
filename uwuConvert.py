@@ -1,3 +1,32 @@
+"""
+File: uwuGenerator.py
+
+Description:
+    This Python script provides functionality for UwU'ifying text by applying specific character transformations.
+    It uses the 'asyncio' library for asynchronous operations, the 'pythonosc' library for sending OSC messages,
+    and the 'controlVariables' module for defining HOST and PORT.
+
+Dependencies:
+    - asyncio
+    - pythonosc.udp_client.SimpleUDPClient
+    - controlVariables.HOST
+    - controlVariables.PORT
+
+Functions:
+    - generate_uwu(input_text): UwU'ifies the input text by applying specific character transformations.
+    - main(): The main function for continuously accepting user input, UwU'ifying text, and sending it to a chatbox.
+
+Driver Code:
+    - The script includes a driver code block for user interaction, accepting text input, UwU'ifying it, and sending
+      the UwU'ified text to a chatbox using OSC messages.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import asyncio
 
 

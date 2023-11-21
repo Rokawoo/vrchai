@@ -1,3 +1,43 @@
+"""
+File: audioProcessing.py
+
+Description:
+    This Python script provides functions for audio processing in the context of a Speech to Text Chat Bot for VrChat.
+    It includes active listening to capture audio from the microphone, conversion of audio data to text using Google Speech
+    Recognition, and playback of audio files triggering facial expressions for the avatar. The script utilizes the
+    'speech_recognition', 'sounddevice', and 'soundfile' libraries for audio processing and the 'pythonosc' library for
+    communication with the VrChat avatar.
+
+Dependencies:
+    - asyncio
+    - os
+    - sounddevice
+    - soundfile
+    - speech_recognition
+    - pythonosc.udp_client.SimpleUDPClient
+    - controlVariables
+
+Global Variables:
+    - HOST: The host for the VrChat avatar communication.
+    - PORT: The port for the VrChat avatar communication.
+    - CLIENT: The UDP client for communication with the VrChat avatar.
+    - recognizer: The speech recognition object.
+    - timeout_duration: The duration for active listening timeout.
+
+Functions:
+    - awoo_face() -> None: Trigger an "awoo" facial expression for the avatar.
+    - active_listening(message: str) -> AudioData or None: Perform active listening to capture audio from the microphone.
+    - convert_audio_to_text(audio: AudioData) -> str or None: Convert audio data to text using Google Speech Recognition.
+    - play_and_delete_sound_files(segments: list of str) -> None: Play audio files and trigger "awoo" facial expressions during playback.
+    - delete_sound_files(number_of_files: int) -> None: Delete audio files.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import asyncio
 import os
 

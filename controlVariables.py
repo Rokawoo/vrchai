@@ -1,3 +1,41 @@
+"""
+File: controlVariables.py
+
+Description:
+    This Python script defines control variables used in the R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text
+    Chat Bot for VrChat. It includes OSC (Open Sound Control) configuration, messages for Roka Master, OSC movement, GPT chat,
+    and the help menu.
+
+OSC:
+    - HOST: The host for OSC communication.
+    - PORT: The port for OSC communication.
+    - LISTENING_PORT: The port for listening to OSC communication.
+
+ROKA MASTER:
+    - IDLE_MESSAGE: Message displayed when Roka is idle.
+    - BOOTING_MESSAGE: Message displayed during Roka's booting process.
+    - RESTARTING_MESSAGE: Message displayed during Roka's restarting process.
+    - TERMINATION_MESSAGE: Message displayed when Roka is shutting down.
+
+OSC MOVEMENT:
+    - MOVE_MESSAGE: Message for indicating Roka is ready to move.
+
+GPT CHAT:
+    - ERROR_MESSAGE: Default error message for GPT chat.
+
+HELP MENU:
+    - MENU_MESSAGE: Main menu message.
+    - INSTRUCTIONS_MESSAGE: Instructions message for interacting with Roka.
+    - COMMANDS_MESSAGE: Commands message for available actions.
+    - ABOUT_MESSAGE: About Roka message.
+
+Author:
+    [Your Name]
+
+Last Updated:
+    [Date]
+"""
+
 # OSC
 HOST = "127.0.0.1"
 PORT = 9000

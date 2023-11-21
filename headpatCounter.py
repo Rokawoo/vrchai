@@ -1,3 +1,56 @@
+"""
+File: headpatCounter.py
+
+Description:
+    This Python script implements a headpat listener using OSC (Open Sound Control). It listens for headpat events,
+    increments a headpat count, and sends messages to a chatbox. The script utilizes the 'pythonosc' library for OSC
+    communication and 'threading' for multithreading.
+
+Dependencies:
+    - threading
+    - time
+    - collections.deque
+    - pythonosc.dispatcher.Dispatcher
+    - pythonosc.osc_server.ThreadingOSCUDPServer
+    - pythonosc.udp_client.SimpleUDPClient
+    - controlVariables.HOST
+    - controlVariables.PORT
+    - controlVariables.LISTENING_PORT
+
+Global Variables:
+    - CLIENT: The SimpleUDPClient for sending OSC messages.
+    - TARGET_ADDRESS: The OSC address for headpat events.
+    - COUNT_FILE_PATH: The file path for storing the headpat count.
+    - MAX_QUEUE_SIZE: The maximum size of the message queue.
+    - is_pat_enabled: Flag to track headpat status.
+    - dispatcher: An instance of the dispatcher for handling OSC messages.
+    - server: The OSC server for receiving messages.
+    - server_thread: The thread for running the OSC server.
+    - message_thread: The thread for processing and sending messages to the chatbox.
+    - headpat_thread: The thread for listening for headpats.
+    - queue_lock: The lock for protecting the message queue access.
+    - new_message_event: The event to signal when a new message is added to the queue.
+    - message_queue: The deque with a maximum size for the message queue.
+    - count: The headpat count variable.
+    - pat_enabled: The condition variable for synchronization.
+
+Functions:
+    - handle_message(address: str, *args) -> None: Handle messages received from the OSC server.
+    - increment_count() -> None: Increment the headpat count, save it, and add a new message to the queue.
+    - save_count() -> None: Save the current headpat count to a file.
+    - load_count() -> int: Load the headpat count from a file.
+    - process_messages() -> None: Process and send messages from the queue to the chatbox.
+    - headpat_listener() -> None: Listen for headpats and toggle the is_pat_enabled flag accordingly.
+    - cleanup() -> None: Shut down the OSC server and join the server and message threads.
+    - start_headpat_listener() -> None: Start the headpat listener and related threads.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
+"""
+
 import threading
 import time
 from collections import deque
