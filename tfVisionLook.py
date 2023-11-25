@@ -6,12 +6,30 @@ Description:
     and ensuring proper punctuation in a given string. Additionally, it contains functions related to object detection
     using TensorFlow and cursor movement with PyDirectInput.
 
+Dependencies:
+    - asyncio
+    - tensorflow
+    - pytesseract
+    - cv2
+    - pyautogui
+    - pydirectinput
+
+Global Variables:
+    - None
+
+Functions:
+    - split_text(input_text): Split the input text into individual words.
+    - ensure_punctuation(input_text): Ensure proper punctuation in the given string.
+    - object_detection(image_path): Perform object detection using TensorFlow on the specified image.
+    - move_cursor(x, y): Move the cursor to the specified coordinates using PyDirectInput.
+
 Author:
     Augustus Sroka
 
 Last Updated:
     11/25/2023
 """
+
 
 import asyncio
 import os
