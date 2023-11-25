@@ -1,3 +1,18 @@
+"""
+File: imageProcessing.py
+
+Description:
+    This Python file contains asynchronous functions for image processing. It includes functionality for splitting text
+    and ensuring proper punctuation in a given string. Additionally, it contains functions related to object detection
+    using TensorFlow and cursor movement with PyDirectInput.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/25/2023
+"""
+
 import asyncio
 import os
 
@@ -37,33 +52,53 @@ ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-50')).expect_partial()
 
 
 async def cleanup():
-    # Additional cleanup steps can be added here
+    """
+    Perform cleanup tasks, such as closing the mss (Python Screen Capture) instance and destroying OpenCV windows.
+
+    Additional cleanup steps can be added here.
+    """
     mss.mss.close()
     cv2.destroyAllWindows()
 
 
 async def read_image_async(file_path):
+    """
+   Asynchronously read the contents of an image file.
+
+   Parameters:
+   - file_path (str): The path to the image file.
+
+   Returns:
+   - bytes: The content of the image file.
+   """
     async with aiofiles.open(file_path, 'rb') as file:
         return await file.read()
 
 
 async def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multiplier=10, sensitivity=1.0):
-    # Get the current cursor position
+    """
+    Move the cursor smoothly to a specified destination on the screen.
+
+    Parameters:
+    - destination_x (int): The x-coordinate of the destination.
+    - destination_y (int): The y-coordinate of the destination.
+    - duration (float): The total time duration for the cursor movement.
+    - steps_multiplier (int): The number of steps to divide the movement into.
+    - sensitivity (float): A sensitivity factor to adjust the step size.
+
+    Note:
+    The cursor movement is achieved by simulating steps using PyDirectInput.
+    """
     current_x, current_y = pydirectinput.position()
 
-    # Calculate the number of steps based on the duration
     steps = int(duration * steps_multiplier)
 
-    # Calculate the step size for each axis with sensitivity adjustment
     step_size_x = (destination_x - current_x) / steps * sensitivity
     step_size_y = (destination_y - current_y) / steps * sensitivity
 
-    # Press the Escape key before starting the movement
     pydirectinput.press('esc')
 
-    # Move the cursor in steps
     for step in range(steps + 1):
-        # Press the Escape key after the first step
         if step == 1:
             pydirectinput.press('esc')
 
@@ -72,11 +107,18 @@ async def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_m
 
         pydirectinput.moveTo(new_x, new_y)
 
-        # Introduce a small delay between steps
         await asyncio.sleep(duration / steps)
 
 
 async def detect_and_process(frame):
+    """
+    Detect objects in a given frame using a TensorFlow detection model and process the results.
+
+    Parameters:
+    - frame (numpy.ndarray): The image frame in NumPy array format.
+
+    The function prints information about detected objects and moves the cursor if needed.
+    """
     input_tensor = tf.convert_to_tensor(np.expand_dims(frame, 0), dtype=tf.float32)
     detections = detect_fn(input_tensor)
 
@@ -86,7 +128,6 @@ async def detect_and_process(frame):
     detections['num_detections'] = num_detections
 
     label_id_offset = 1
-    image_np_with_detections = frame.copy()
 
     # Sort detections based on scores in descending order
     sorted_indices = np.argsort(detections['detection_scores'])[::-1]
@@ -123,7 +164,8 @@ async def detect_and_process(frame):
                 await move_cursor_smoothly(center_x, center_y, 1, 10, 0.45)
     '''
     detection_classes_int = detections['detection_classes'].astype(int)
-
+    image_np_with_detections = frame.copy()
+    
     viz_utils.visualize_boxes_and_labels_on_image_array(
         image_np_with_detections,
         detections['detection_boxes'],
@@ -142,6 +184,16 @@ async def detect_and_process(frame):
 
 @tf.function
 def detect_fn(image):
+    """
+    Run object detection on the given image using a TensorFlow detection model.
+
+    Parameters:
+    - image (tf.Tensor): The input image tensor.
+
+    Returns:
+    - dict: A dictionary containing the detection results, including detection boxes,
+            classes, scores, and the number of detections.
+    """
     image, shapes = detection_model.preprocess(image)
     prediction_dict = detection_model.predict(image, shapes)
     detections = detection_model.postprocess(prediction_dict, shapes)
@@ -149,6 +201,11 @@ def detect_fn(image):
 
 
 async def capture_and_process():
+    """
+    Continuously capture screenshots, process them for object detection, and move the cursor accordingly.
+
+    The function runs in an infinite loop until the 'q' key is pressed.
+    """
     sct = mss.mss()
     while True:
         sct.shot(output='temp.png')  # Save the screenshot to a temporary file
@@ -165,7 +222,7 @@ async def capture_and_process():
 async def main():
     try:
         await asyncio.gather(
-            asyncio.create_task(move_cursor_smoothly(0, 0)),  # Initial call to move_cursor_smoothly
+            asyncio.create_task(move_cursor_smoothly(0, 0)),
             capture_and_process()
         )
     finally:
