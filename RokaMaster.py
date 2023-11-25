@@ -4,12 +4,6 @@ File: RokaMaster.py
 Purpose:
     R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text Chat Bot for VrChat
 
-Author:
-    Augustus SRoka
-
-Last Updated:
-    11/20/2023
-
 Description:
     This Python script implements the R.o.k.a. (Really Optimistic Komputer Assistant) Speech to Text Chat Bot for VrChat.
     It utilizes asyncio for asynchronous operations and integrates various modules for audio processing, GPT-based chat,
@@ -33,6 +27,12 @@ Usage:
 
 Note:
     Ensure all dependencies are installed before running the script.
+
+Author:
+    Augustus Sroka
+
+Last Updated:
+    11/20/2023
 """
 
 import asyncio
