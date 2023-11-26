@@ -223,10 +223,7 @@ async def capture_and_process():
 
 async def main():
     try:
-        await asyncio.gather(
-            asyncio.create_task(move_cursor_smoothly(960, 540, 1, 1)),
-            capture_and_process()
-        )
+        await asyncio.gather(capture_and_process())
     finally:
         vLcleanup()
 

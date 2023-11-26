@@ -117,8 +117,8 @@ async def main_loop():
             await delete_sound_files(3)
             print(BOOTING_MESSAGE)
             CLIENT.send_message("/chatbox/input", [BOOTING_MESSAGE, True])
-            #start_headpat_listener()
-            #start_vision_looker()
+            start_headpat_listener()
+            start_vision_looker()
             await main()
 
         except Exception as e:
