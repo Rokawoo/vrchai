@@ -46,8 +46,8 @@ from VrChAI.headpatCounter import start_headpat_listener, hCcleanup
 from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
 from VrChAI.stringProcessing import split_string, end_sentence
-from VrChAI.tiktockTts import tts
 from VrChAI.tfVisionLook import start_vision_looker, vLcleanup
+from VrChAI.tiktockTts import tts
 from controlVariables import HOST, PORT, IDLE_MESSAGE, BOOTING_MESSAGE, RESTARTING_MESSAGE, TERMINATION_MESSAGE
 
 CLIENT = SimpleUDPClient(HOST, PORT)
@@ -117,8 +117,8 @@ async def main_loop():
             await delete_sound_files(3)
             print(BOOTING_MESSAGE)
             CLIENT.send_message("/chatbox/input", [BOOTING_MESSAGE, True])
-            start_headpat_listener()
-            start_vision_looker()
+            #start_headpat_listener()
+            #start_vision_looker()
             await main()
 
         except Exception as e:

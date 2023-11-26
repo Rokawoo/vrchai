@@ -248,7 +248,7 @@ def vLcleanup():
         print(f"Error during shutdown: {e}")
 
     try:
-        vision_looker_thread.join(timeout=10)
+        vision_looker_thread.join(timeout=5)
     except Exception as e:
         print(f"Error during thread join: {e}")
 

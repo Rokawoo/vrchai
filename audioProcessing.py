@@ -51,7 +51,10 @@ from controlVariables import HOST, PORT
 CLIENT = SimpleUDPClient(HOST, PORT)
 
 recognizer = sr.Recognizer()
+recognizer.energy_threshold = 500
 recognizer.dynamic_energy_threshold = True
+recognizer.dynamic_energy_adjustment_damping = 0.15
+recognizer.dynamic_energy_adjustment_ratio = 1.5
 recognizer.pause_threshold = 1.15  # Silence threshold in Seconds
 timeout_duration = 10
 

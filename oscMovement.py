@@ -129,6 +129,16 @@ async def jump(amount):
             CLIENT.send_message("/input/Jump", 1)
             await asyncio.sleep(0.4)
             CLIENT.send_message("/input/Jump", 0)
+            await asyncio.sleep(0.5)
+
+
+async def forward_jump(amount):
+    CLIENT.send_message("/input/MoveForward", 1)
+    await asyncio.sleep(0.1)
+    CLIENT.send_message("/input/Jump", 1)
+    await asyncio.sleep(0.95)
+    CLIENT.send_message("/input/MoveForward", 0)
+    CLIENT.send_message("/input/Jump", 0)
 
 
 async def dance(amount):
@@ -157,6 +167,7 @@ commands = {
     r"(half turn|turn around)": half_turn,
     r"(spin|full turn)": full_turn,
     "jump": jump,
+    "leap": forward_jump,
     "speak": awoo,
     "dance": dance
 }
@@ -231,7 +242,7 @@ if __name__ == "__main__":
         - None
         """
         try:
-            print("Listening for a command...")
+            print("Movement Command Mode:")
             audio = await active_listening(MOVE_MESSAGE)
 
             if audio is not None:
