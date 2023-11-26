@@ -42,11 +42,12 @@ from pythonosc.udp_client import SimpleUDPClient
 from VrChAI.audioProcessing import active_listening, convert_audio_to_text, play_and_delete_sound_files, \
     delete_sound_files
 from VrChAI.gptChat import process_and_log_message_generate_response, get_current_date
-from VrChAI.headpatCounter import start_headpat_listener, cleanup
+from VrChAI.headpatCounter import start_headpat_listener, hCcleanup
 from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
 from VrChAI.stringProcessing import split_string, end_sentence
 from VrChAI.tiktockTts import tts
+from VrChAI.tfVisionLook import start_vision_looker, vLcleanup
 from controlVariables import HOST, PORT, IDLE_MESSAGE, BOOTING_MESSAGE, RESTARTING_MESSAGE, TERMINATION_MESSAGE
 
 CLIENT = SimpleUDPClient(HOST, PORT)
@@ -117,6 +118,7 @@ async def main_loop():
             print(BOOTING_MESSAGE)
             CLIENT.send_message("/chatbox/input", [BOOTING_MESSAGE, True])
             start_headpat_listener()
+            start_vision_looker()
             await main()
 
         except Exception as e:
@@ -130,7 +132,8 @@ async def main_loop():
             break
 
         finally:
-            cleanup()
+            hCcleanup()
+            vLcleanup()
 
 
 if __name__ == "__main__":

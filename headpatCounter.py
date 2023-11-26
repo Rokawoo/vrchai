@@ -216,7 +216,7 @@ def headpat_listener():
         pass
 
 
-def cleanup():
+def hCcleanup():
     """
     Shut down the OSC server and join the server and message threads.
 
@@ -260,4 +260,4 @@ if __name__ == "__main__":
     try:
         start_headpat_listener()
     finally:
-        cleanup()
+        hCcleanup()

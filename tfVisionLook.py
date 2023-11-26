@@ -32,6 +32,7 @@ Last Updated:
 
 import asyncio
 import os
+import threading
 
 import aiofiles
 import cv2
@@ -66,17 +67,6 @@ detection_model = model_builder.build(model_config=configs['model'], is_training
 # Restore checkpoint
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-50')).expect_partial()
-
-
-async def cleanup():
-    """
-    Perform cleanup tasks, such as closing the mss (Python Screen Capture) instance and destroying OpenCV windows.
-
-    Additional cleanup steps can be added here.
-    """
-    mss.mss().close()
-    cv2.destroyAllWindows()
-
 
 detected_objects_list = []
 
@@ -238,7 +228,35 @@ async def main():
             capture_and_process()
         )
     finally:
-        await cleanup()
+        vLcleanup()
+
+
+vision_looker_thread = None
+
+
+def vLcleanup():
+    """
+    Perform cleanup tasks, such as closing the mss (Python Screen Capture) instance and destroying OpenCV windows.
+
+    Additional cleanup steps can be added here.
+    """
+    global vision_looker_thread
+    try:
+        mss.mss().close()
+        cv2.destroyAllWindows()
+    except Exception as e:
+        print(f"Error during shutdown: {e}")
+
+    try:
+        vision_looker_thread.join(timeout=10)
+    except Exception as e:
+        print(f"Error during thread join: {e}")
+
+
+def start_vision_looker():
+    global vision_looker_thread
+    vision_looker_thread = threading.Thread(target=lambda: asyncio.run(main()), daemon=True)
+    vision_looker_thread.start()
 
 
 if __name__ == "__main__":
