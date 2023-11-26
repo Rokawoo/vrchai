@@ -42,11 +42,11 @@ from pythonosc.udp_client import SimpleUDPClient
 from VrChAI.audioProcessing import active_listening, convert_audio_to_text, play_and_delete_sound_files, \
     delete_sound_files
 from VrChAI.gptChat import process_and_log_message_generate_response, get_current_date
-from VrChAI.headpatCounter import start_headpat_listener, hCcleanup
+from VrChAI.headpatCounter import start_headpat_listener, headpat_cleanup
 from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
 from VrChAI.stringProcessing import split_string, end_sentence
-from VrChAI.tfVisionLook import start_vision_looker, vLcleanup
+from VrChAI.tfVisionLook import start_vision_looker, vision_cleanup
 from VrChAI.tiktockTts import tts
 from controlVariables import HOST, PORT, IDLE_MESSAGE, BOOTING_MESSAGE, RESTARTING_MESSAGE, TERMINATION_MESSAGE
 
@@ -132,8 +132,8 @@ async def main_loop():
             break
 
         finally:
-            hCcleanup()
-            vLcleanup()
+            headpat_cleanup()
+            vision_cleanup()
 
 
 if __name__ == "__main__":

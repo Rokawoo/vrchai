@@ -225,13 +225,13 @@ async def main():
     try:
         await asyncio.gather(capture_and_process())
     finally:
-        vLcleanup()
+        vision_cleanup()
 
 
 vision_looker_thread = None
 
 
-def vLcleanup():
+def vision_cleanup():
     """
     Perform cleanup tasks, such as closing the mss (Python Screen Capture) instance and destroying OpenCV windows.
 
