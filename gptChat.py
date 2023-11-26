@@ -40,6 +40,7 @@ from dotenv import load_dotenv
 from pytz import timezone
 
 from controlVariables import ERROR_MESSAGE
+from tfVisionLook import get_detected_objects
 
 load_dotenv(dotenv_path="keys.env")
 webhook_url = os.getenv("DISCORD_WEBHOOK")
@@ -75,7 +76,7 @@ async def process_and_log_message_generate_response(message, date):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": personality},
-                {"role": "assistant", "content": date},
+                {"role": "assistant", "content": f"{date}\nYou can see: {await get_detected_objects()}"},
                 {"role": "user", "content": message}
             ],
             temperature=0.65,

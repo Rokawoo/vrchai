@@ -1,5 +1,5 @@
 """
-File: imageProcessing.py
+File: tfVisionLook.py
 
 Description:
     This Python file contains asynchronous functions for image processing. It includes functionality for splitting text
@@ -29,7 +29,6 @@ Author:
 Last Updated:
     11/25/2023
 """
-
 
 import asyncio
 import os
@@ -75,8 +74,24 @@ async def cleanup():
 
     Additional cleanup steps can be added here.
     """
-    mss.mss.close()
+    mss.mss().close()
     cv2.destroyAllWindows()
+
+
+detected_objects_list = []
+
+
+async def get_detected_objects():
+    """
+    Returns the list of detected objects based on the latest frame analysis.
+
+    Returns:
+    - List[Union[None, List[Union[str, float, Tuple[float, float]]]]]: The list of detected objects.
+    """
+    global detected_objects_list
+
+    return [item['class'] if item['class'] != 'DefaultFace' else 'Person' for item in
+            detected_objects_list] if detected_objects_list else ''
 
 
 async def read_image_async(file_path):
@@ -135,8 +150,9 @@ async def detect_and_process(frame):
     Parameters:
     - frame (numpy.ndarray): The image frame in NumPy array format.
 
-    The function prints information about detected objects and moves the cursor if needed.
+    The function prints information about the highest-scoring detected object and moves the cursor if needed.
     """
+    global detected_objects_list
     input_tensor = tf.convert_to_tensor(np.expand_dims(frame, 0), dtype=tf.float32)
     detections = detect_fn(input_tensor)
 
@@ -150,54 +166,36 @@ async def detect_and_process(frame):
     # Sort detections based on scores in descending order
     sorted_indices = np.argsort(detections['detection_scores'])[::-1]
 
-    for i in range(num_detections):
-        index = sorted_indices[i]
-        score = detections['detection_scores'][index]
+    # Use list comprehension for building the detected_objects_list
+    detected_objects_list = [
+        {
+            'class': category_index[int(detections['detection_classes'][i]) + label_id_offset]['name'],
+            'coordinates': detections['detection_boxes'][i]
+        }
+        for i in sorted_indices if detections['detection_scores'][i] >= 0.8
+    ]
 
-        if score >= 0.8:
-            box = detections['detection_boxes'][index]
-            class_id = int(detections['detection_classes'][index]) + label_id_offset
+    if detected_objects_list:
+        # Get information about the highest-scoring detected object
+        highest_score_object = detected_objects_list[0]
 
-            # Extracting coordinates
-            ymin, xmin, ymax, xmax = box
-            im_height, im_width, _ = frame.shape
+        # Extracting center coordinates of the highest-scoring object
+        ymin, xmin, ymax, xmax = highest_score_object['coordinates']
+        im_height, im_width, _ = frame.shape
 
-            # Convert box coordinates to integers
-            (left, right, top, bottom) = (
-                int(xmin * im_width), int(xmax * im_width), int(ymin * im_height), int(ymax * im_height))
+        # Convert box coordinates to integers
+        (left, right, top, bottom) = (
+            int(xmin * im_width), int(xmax * im_width), int(ymin * im_height), int(ymax * im_height))
 
-            # Calculate and print the center coordinates
-            center_x = (left + right) / 2
-            center_y = (top + bottom) / 2
+        # Calculate center coordinates
+        center_x = (left + right) / 2
+        center_y = (top + bottom) / 2
 
-            # Print coordinates
-            print(f"Box {i + 1} with Highest Score - Class: {category_index[class_id]['name']}, Score: {score:.2f}")
-            print(f"    Coordinates (x, y): {center_x:.2f}, {center_y:.2f}")
-
-            # Check if the amount needed to move is minimal
-            current_x, current_y = pydirectinput.position()
-            distance = np.sqrt((center_x - current_x) ** 2 + (center_y - current_y) ** 2)
-            print(distance)
-            if distance > 50:  # Adjust the threshold as needed
-                await move_cursor_smoothly(center_x, center_y, 1, 10, 0.45)
-    '''
-    detection_classes_int = detections['detection_classes'].astype(int)
-    image_np_with_detections = frame.copy()
-    
-    viz_utils.visualize_boxes_and_labels_on_image_array(
-        image_np_with_detections,
-        detections['detection_boxes'],
-        detection_classes_int + label_id_offset,
-        detections['detection_scores'],
-        category_index,
-        use_normalized_coordinates=True,
-        max_boxes_to_draw=3,
-        min_score_thresh=.8,
-        agnostic_mode=False
-    )
-    
-    cv2.imshow('object detection', cv2.resize(image_np_with_detections, (1280, 720)))
-    '''
+        # Check if the amount needed to move is minimal
+        current_x, current_y = pydirectinput.position()
+        distance = np.sqrt((center_x - current_x) ** 2 + (center_y - current_y) ** 2)
+        if distance > 50:  # Adjust the threshold as needed
+            await move_cursor_smoothly(center_x, center_y, 1, 10, 0.45)
 
 
 @tf.function
@@ -231,16 +229,12 @@ async def capture_and_process():
         frame = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         await detect_and_process(frame)
-        if cv2.waitKey(10) & 0xFF == ord('q'):
-            sct.close()
-            cv2.destroyAllWindows()
-            break
 
 
 async def main():
     try:
         await asyncio.gather(
-            asyncio.create_task(move_cursor_smoothly(0, 0)),
+            asyncio.create_task(move_cursor_smoothly(960, 540, 1, 1)),
             capture_and_process()
         )
     finally:
