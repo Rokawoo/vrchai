@@ -56,15 +56,12 @@ files = {
     'LABELMAP': os.path.join(paths['ANNOTATION_PATH'], LABEL_MAP_NAME)
 }
 
-# Load label map and category index
 label_map_path = files['LABELMAP']  # Replace with the actual path to your label map
 category_index = label_map_util.create_category_index_from_labelmap(label_map_path, use_display_name=True)
 
-# Load pipeline config and build a detection model
 configs = config_util.get_configs_from_pipeline_file(files['PIPELINE_CONFIG'])
 detection_model = model_builder.build(model_config=configs['model'], is_training=False)
 
-# Restore checkpoint
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-50')).expect_partial()
 
@@ -153,10 +150,8 @@ async def detect_and_process(frame):
 
     label_id_offset = 1
 
-    # Sort detections based on scores in descending order
     sorted_indices = np.argsort(detections['detection_scores'])[::-1]
 
-    # Use list comprehension for building the detected_objects_list
     detected_objects_list = [
         {
             'class': category_index[int(detections['detection_classes'][i]) + label_id_offset]['name'],
@@ -166,22 +161,17 @@ async def detect_and_process(frame):
     ]
 
     if detected_objects_list:
-        # Get information about the highest-scoring detected object
         highest_score_object = detected_objects_list[0]
 
-        # Extracting center coordinates of the highest-scoring object
         ymin, xmin, ymax, xmax = highest_score_object['coordinates']
         im_height, im_width, _ = frame.shape
 
-        # Convert box coordinates to integers
         (left, right, top, bottom) = (
             int(xmin * im_width), int(xmax * im_width), int(ymin * im_height), int(ymax * im_height))
 
-        # Calculate center coordinates
         center_x = (left + right) / 2
         center_y = (top + bottom) / 2
 
-        # Check if the amount needed to move is minimal
         current_x, current_y = pydirectinput.position()
         distance = np.sqrt((center_x - current_x) ** 2 + (center_y - current_y) ** 2)
         if distance > 50:  # Adjust the threshold as needed
