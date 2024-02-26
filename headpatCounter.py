@@ -236,7 +236,8 @@ def headpat_cleanup():
         print(f"Error during thread join: {e}")
 
     save_count()
-    
+
+
 def start_headpat_listener():
     """
     Start the headpat listener and related threads.

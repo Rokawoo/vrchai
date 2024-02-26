@@ -28,34 +28,19 @@ Last Updated:
     11/20/2023
 """
 
-import pydirectinput
-import time
-import win32api, win32con
 import random
-import cv2
-import numpy as np
-import mss
-import oscMovement
+import time
 
+import cv2
+import mss
+import pydirectinput
+import win32api
+import win32con
 from pythonosc.udp_client import SimpleUDPClient
-from controlVariables import HOST, PORT, MOVE_MESSAGE
+
+from controlVariables import HOST, PORT, AWAITING_MOVEMENT
 
 CLIENT = SimpleUDPClient(HOST, PORT)
-
-
-def click():
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    time.sleep(0.01)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-
-
-def respawn():
-    """
-    Respawn function to reset the virtual environment.
-    """
-    pydirectinput.press('esc')
-    pydirectinput.moveTo(900, 815)
-    click()
 
 
 def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multiplier=10, sensitivity=1.0):
@@ -93,6 +78,21 @@ def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multipl
         time.sleep(duration / steps)
 
 
+def click():
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+    time.sleep(0.01)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+
+def respawn():
+    """
+    Respawn function to reset the virtual environment.
+    """
+    pydirectinput.press('esc')
+    pydirectinput.moveTo(900, 815)
+    click()
+
+
 def the_great_pug_position_normalization():
     """
     """
@@ -105,7 +105,6 @@ def the_great_pug_position_normalization():
         sct.shot(output='normalization_temp.png')
         frame = cv2.imread('normalization_temp.png')
 
-        # Check if a pixel is whiteish
         pixel_color = frame[438, 384]
         r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
         if (61 < r < 73) and (43 < g < 55) and (21 < b < 33):
@@ -117,6 +116,19 @@ def the_great_pug_position_1():
     CLIENT.send_message("/input/TurnLeft", 1)
     time.sleep(1.5)
     CLIENT.send_message("/input/TurnLeft", 0)
+
+
+def set_time_to_move():
+    global AWAITING_MOVEMENT
+    wait_time = random.randint(240, 300)
+    time.sleep(wait_time)
+    AWAITING_MOVEMENT = True
+
+
+def start_world_movement(world):
+    global AWAITING_MOVEMENT
+    AWAITING_MOVEMENT = False
+    pass
 
 
 while True:
