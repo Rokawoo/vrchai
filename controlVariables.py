@@ -49,6 +49,7 @@ TERMINATION_MESSAGE = "Shutting Down Roka..."
 
 # OSC MOVEMENT
 MOVE_MESSAGE = "\U0001F6B6 Ready to Move~!"
+Moving = False
 
 # GPT CHAT
 ERROR_MESSAGE = "Sorry woof, I don't know what to say at this time. Please give me a moment. >.>"

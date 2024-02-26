@@ -100,7 +100,6 @@ def increment_count():
     """
     global count
     count += 1
-    save_count()
     formatted_count = "{:,}".format(count)  # Format count with commas
     print(f"Count incremented: {formatted_count}")
     with queue_lock:
@@ -115,7 +114,7 @@ def save_count():
     Returns:
     - None
     """
-    global COUNT_FILE_PATH
+    global COUNT_FILE_PATH, count
     with open(COUNT_FILE_PATH, "w") as file:
         file.write(str(count))
 
@@ -198,7 +197,7 @@ def headpat_listener():
     """
     global pat_enabled, is_pat_enabled
     print("Listening For Headpats...")
-    is_pat_enabled = True  # Flag to track pat status
+    is_pat_enabled = True
     try:
         while True:
             # Wait until pat is disabled
@@ -236,7 +235,8 @@ def headpat_cleanup():
     except Exception as e:
         print(f"Error during thread join: {e}")
 
-
+    save_count()
+    
 def start_headpat_listener():
     """
     Start the headpat listener and related threads.

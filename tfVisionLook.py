@@ -204,7 +204,7 @@ async def capture_and_process():
     """
     sct = mss.mss()
     while True:
-        sct.shot(output='temp.png')  # Save the screenshot to a temporary file
+        sct.shot(output='vision_temp.png')  # Save the screenshot to a temporary file
         image_data = await read_image_async('temp.png')  # Read the screenshot from the file
         frame = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
