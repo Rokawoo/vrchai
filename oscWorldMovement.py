@@ -1,31 +1,36 @@
 """
-File: ocsWorldMovement.py
+File: VrChatMovement.py
+
+Purpose:
+    VrChat Movement Control Script for Cursor and Avatar.
 
 Description:
-    This Python script provides functionality for executing movement commands relative to a specific virtual
-    environment. It uses the 'pythonosc' library for sending OSC messages, 'asyncio' for asynchronous
-    operations.
+    This Python script implements control for cursor movement and avatar actions in VrChat. It utilizes various libraries
+    for screen capturing, input simulation, and asynchronous operations to enable smooth cursor movement and avatar actions.
+    The script contains functions for moving the cursor smoothly, clicking, respawning the avatar, and positioning the
+    avatar in specific locations within the virtual world.
 
 Dependencies:
-    - asyncio
+    - pythonosc
+    - cv2
+    - mss
     - pydirectinput
-    - pythonosc.udp_client.SimpleUDPClient
-    - controlVariables.HOST
-    - controlVariables.PORT
-    - controlVariables.MOVE_MESSAGE
+    - win32api
+    - win32con
+    - controlVariables
 
-Global Variables:
-    - CLIENT: The SimpleUDPClient for sending OSC messages.
-    - commands: A dictionary mapping regular expressions to corresponding movement commands.
-    - number_words: A dictionary mapping words to their numerical values.
-    - compiled_commands: A dictionary mapping compiled regular expressions to corresponding movement functions.
-    - compiled_number_words: A dictionary mapping compiled regular expressions to numerical values.
+Usage:
+    Run the script to control cursor movement and avatar actions in VrChat. Ensure all dependencies are installed and
+    the controlVariables are appropriately configured.
+
+Note:
+    This script is designed for use in VrChat environments.
 
 Author:
     Augustus Sroka
 
 Last Updated:
-    11/20/2023
+    2/26/2024
 """
 
 from pythonosc.udp_client import SimpleUDPClient
@@ -84,18 +89,27 @@ async def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_m
 
 
 async def click():
+    """
+    Simulate a mouse click by pressing and releasing the left mouse button.
+    """
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
     await asyncio.sleep(0.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
 async def respawn():
+    """
+    Performs a respawn action in the game environment.
+    """
     pydirectinput.press('esc')
     pydirectinput.moveTo(900, 815)
     await click()
 
 
 async def the_great_pug_position_normalization():
+    """
+    Normalize the spawn position in "The Great Pug" game environment.
+    """
     sct = mss.mss()
     while True:
         await respawn()
@@ -112,26 +126,32 @@ async def the_great_pug_position_normalization():
 
 
 async def the_great_pug_position_1():
+    """
+    Perform a movement actions in "The Great Pug" game environment to position 1.
+    """
     CLIENT.send_message("/input/TurnLeft", 1)
     await asyncio.sleep(1.5)
     CLIENT.send_message("/input/TurnLeft", 0)
 
 
-async def start_world_movement_random(world, current_position_number=0):
-    possible_positions = {1, 2, 3}
-    if current_position_number != 0:
-        possible_positions.remove(current_position_number)
-    next_position_number = random.choice(list(possible_positions))
+async def start_world_movement_random(world, current_position_number=0, override_position_number=None):
+    """
+    Start movement in the game world randomly.
 
-    world_position_normalization = globals()[f"{world}_position_normalization"]
-    world_position = globals()[f"{world}_position_{next_position_number}"]
-    await world_position_normalization()
-    await world_position()
+    Parameters:
+    - world (str): The name of the game world.
+    - current_position_number (int): The current position number. (Default 0 - All positions Viable)
+    - specific_position_number (int): Override for random position.
 
-    return next_position_number
+    Returns:
+    int: The next position number after the movement.
+    """
+    if override_position_number is not None:
+        next_position_number = override_position_number
+    else:
+        possible_positions = {1, 2, 3} - {current_position_number}
+        next_position_number = random.choice(list(possible_positions))
 
-
-async def start_world_movement(world, next_position_number):
     world_position_normalization = globals()[f"{world}_position_normalization"]
     world_position = globals()[f"{world}_position_{next_position_number}"]
     await world_position_normalization()

@@ -1,33 +1,40 @@
 """
 File: tfVisionLook.py
 
+Purpose:
+    Object Detection Script using TensorFlow and OpenCV.
+
 Description:
-    This Python file contains asynchronous functions for image processing. It includes functionality for splitting text
-    and ensuring proper punctuation in a given string. Additionally, it contains functions related to object detection
-    using TensorFlow and cursor movement with PyDirectInput.
+    This Python script implements object detection using a TensorFlow detection model and controls the cursor movement
+    based on the detected objects in the screen. It continuously captures screenshots, processes them for object detection,
+    and moves the cursor accordingly. The script utilizes TensorFlow for object detection and OpenCV for image processing.
 
 Dependencies:
     - asyncio
-    - tensorflow
-    - pytesseract
+    - os
+    - threading
+    - aiofiles
     - cv2
-    - pyautogui
+    - mss
+    - numpy
     - pydirectinput
+    - tensorflow
+    - object_detection (TensorFlow Object Detection API)
+    - oscWorldMovement (custom module)
 
-Global Variables:
-    - None
+Usage:
+    Run the script to enable object detection and cursor control. Ensure all dependencies are installed and the
+    custom module oscWorldMovement is accessible.
 
-Functions:
-    - split_text(input_text): Split the input text into individual words.
-    - ensure_punctuation(input_text): Ensure proper punctuation in the given string.
-    - object_detection(image_path): Perform object detection using TensorFlow on the specified image.
-    - move_cursor(x, y): Move the cursor to the specified coordinates using PyDirectInput.
+Note:
+    This script is designed for detecting players in a real-time screen environment. It requires proper setup and
+    configuration of the TensorFlow object detection model.
 
 Author:
     Augustus Sroka
 
 Last Updated:
-    11/25/2023
+    11/23/2024
 """
 
 import asyncio
@@ -178,16 +185,6 @@ async def capture_and_process():
         await detect_and_process(frame)
 
 
-async def main():
-    try:
-        await asyncio.gather(capture_and_process())
-    finally:
-        vision_cleanup()
-
-
-vision_looker_thread = None
-
-
 def vision_cleanup():
     """
     Perform cleanup tasks, such as closing the mss (Python Screen Capture) instance and destroying OpenCV windows.
@@ -207,10 +204,20 @@ def vision_cleanup():
         print(f"Error during thread join: {e}")
 
 
+vision_looker_thread = None
+
+
 def start_vision_looker():
     global vision_looker_thread
     vision_looker_thread = threading.Thread(target=lambda: asyncio.run(main()), daemon=True)
     vision_looker_thread.start()
+
+
+async def main():
+    try:
+        await asyncio.gather(capture_and_process())
+    finally:
+        vision_cleanup()
 
 
 if __name__ == "__main__":
