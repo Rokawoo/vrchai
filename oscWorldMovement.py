@@ -47,6 +47,7 @@ import mss
 import pydirectinput
 import win32api
 import win32con
+import oscMovement
 from pythonosc.udp_client import SimpleUDPClient
 from controlVariables import HOST, PORT
 
@@ -105,33 +106,50 @@ async def respawn():
     pydirectinput.moveTo(900, 815)
     await click()
 
+async def capture_frame_and_pixel_color(y, x):
+    mss.mss().shot(output='normalization_temp.png')
+    frame = cv2.imread('normalization_temp.png')
+    pixel_color = frame[y, x]
+    return pixel_color
+
 
 async def the_great_pug_position_normalization():
     """
     Normalize the spawn position in "The Great Pug" game environment.
     """
-    sct = mss.mss()
-    while True:
-        await respawn()
-        await asyncio.sleep(0.1)
-        await move_cursor_smoothly(960, 9999, 1, 1)
-        await move_cursor_smoothly(960, -380, 1, 1)
-        sct.shot(output='normalization_temp.png')
-        frame = cv2.imread('normalization_temp.png')
+    await respawn()
+    await asyncio.sleep(0.1)
+    await move_cursor_smoothly(960, -9999, 1, 1)
 
-        pixel_color = frame[438, 384]
+    while True:
+        pixel_color = await capture_frame_and_pixel_color(975, 665)
         r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
-        if (61 < r < 73) and (43 < g < 55) and (21 < b < 33):
-            break
+        if (197 < r < 209) and (187 < g < 199) and (154 < b < 166):
+            while True:
+                pixel_color = await capture_frame_and_pixel_color(1079, 1)
+                r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
+                print(r, g, b)
+                if (36 < r < 54) and (26 < g < 42) and (14 < b < 29):
+                    await move_cursor_smoothly(960, 1600, 1, 1)
+                    await oscMovement.forward_move(1)
+                    await oscMovement.left_turn_free(0.3377)
+                    await oscMovement.forward_move(1)
+                    await oscMovement.left_turn_free(0.015)
+                    await oscMovement.right_move(0.06)
+                    return None
+                await oscMovement.right_turn_free(0.0001)
+        await respawn()
+        await asyncio.sleep(0.15)
 
 
 async def the_great_pug_position_1():
     """
     Perform a movement actions in "The Great Pug" game environment to position 1.
     """
-    CLIENT.send_message("/input/TurnLeft", 1)
-    await asyncio.sleep(1.5)
-    CLIENT.send_message("/input/TurnLeft", 0)
+    await oscMovement.forward_move(7.8)
+    await oscMovement.half_turn(1)
+    await oscMovement.right_move(0.18)
+    await oscMovement.left_turn_free(0.04)
 
 
 async def start_world_movement_random(world, current_position_number=0, override_position_number=None):
@@ -161,9 +179,8 @@ async def start_world_movement_random(world, current_position_number=0, override
 
 
 async def main():
-    while True:
-        await the_great_pug_position_normalization()
-        break
+    await start_world_movement_random("the_great_pug", 0, 1)
+
 
 
 if __name__ == "__main__":

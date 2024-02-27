@@ -98,10 +98,24 @@ async def left_turn(amount):
         CLIENT.send_message("/input/LookLeft", 0)
 
 
+async def left_turn_free(amount):
+    if amount > 0:
+        CLIENT.send_message("/input/LookLeft", 1)
+        await asyncio.sleep(amount)
+        CLIENT.send_message("/input/LookLeft", 0)
+
+
 async def right_turn(amount):
     if amount > 0:
         CLIENT.send_message("/input/LookRight", 1)
         await asyncio.sleep(0.44875)
+        CLIENT.send_message("/input/LookRight", 0)
+
+
+async def right_turn_free(amount):
+    if amount > 0:
+        CLIENT.send_message("/input/LookRight", 1)
+        await asyncio.sleep(amount)
         CLIENT.send_message("/input/LookRight", 0)
 
 
