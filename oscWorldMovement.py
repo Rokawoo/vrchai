@@ -108,7 +108,6 @@ def the_great_pug_position_normalization():
         pixel_color = frame[438, 384]
         r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
         if (61 < r < 73) and (43 < g < 55) and (21 < b < 33):
-            print("Position Normalized")
             break
 
 
@@ -120,6 +119,7 @@ def the_great_pug_position_1():
 
 def set_time_to_move():
     global AWAITING_MOVEMENT
+    AWAITING_MOVEMENT = False
     wait_time = random.randint(240, 300)
     time.sleep(wait_time)
     AWAITING_MOVEMENT = True
@@ -127,8 +127,13 @@ def set_time_to_move():
 
 def start_world_movement(world):
     global AWAITING_MOVEMENT
-    AWAITING_MOVEMENT = False
-    pass
+
+    world_position_normalization = globals()[f"{world}_position_normalization"]
+    world_position = globals()[f"{world}_position_{random.randint(1, 3)}"]
+    world_position_normalization()
+    world_position()
+
+    set_time_to_move()
 
 
 while True:
