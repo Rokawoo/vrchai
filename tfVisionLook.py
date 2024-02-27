@@ -43,6 +43,8 @@ import tensorflow as tf
 from object_detection.builders import model_builder
 from object_detection.utils import config_util, label_map_util
 
+from oscWorldMovement import move_cursor_smoothly
+
 CUSTOM_MODEL_NAME = 'my_ssd_resnet50_v1_fpn_640x640_coco17_tpu-8_tuned'
 LABEL_MAP_NAME = 'label_map.pbtxt'
 
@@ -93,41 +95,6 @@ async def read_image_async(file_path):
    """
     async with aiofiles.open(file_path, 'rb') as file:
         return await file.read()
-
-
-async def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multiplier=10, sensitivity=1.0):
-    """
-    Move the cursor smoothly to a specified destination on the screen.
-
-    Parameters:
-    - destination_x (int): The x-coordinate of the destination.
-    - destination_y (int): The y-coordinate of the destination.
-    - duration (float): The total time duration for the cursor movement.
-    - steps_multiplier (int): The number of steps to divide the movement into.
-    - sensitivity (float): A sensitivity factor to adjust the step size.
-
-    Note:
-    The cursor movement is achieved by simulating steps using PyDirectInput.
-    """
-    current_x, current_y = pydirectinput.position()
-
-    steps = int(duration * steps_multiplier)
-
-    step_size_x = (destination_x - current_x) / steps * sensitivity
-    step_size_y = (destination_y - current_y) / steps * sensitivity
-
-    pydirectinput.press('esc')
-
-    for step in range(steps + 1):
-        if step == 1:
-            pydirectinput.press('esc')
-
-        new_x = int(current_x + step_size_x * step)
-        new_y = int(current_y + step_size_y * step)
-
-        pydirectinput.moveTo(new_x, new_y)
-
-        await asyncio.sleep(duration / steps)
 
 
 async def detect_and_process(frame):

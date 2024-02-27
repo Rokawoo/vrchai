@@ -45,6 +45,7 @@ from VrChAI.gptChat import process_and_log_message_generate_response, get_curren
 from VrChAI.headpatCounter import start_headpat_listener, headpat_cleanup
 from VrChAI.helpMenu import help_menu
 from VrChAI.oscMovement import process_command
+from VrChAI.oscWorldMovement import start_world_movement_random
 from VrChAI.stringProcessing import split_string, end_sentence
 from VrChAI.tfVisionLook import start_vision_looker, vision_cleanup
 from VrChAI.tiktockTts import tts
@@ -58,8 +59,10 @@ async def main():
     date = get_current_date()
 
     number_of_requests = 1
+    RELOCATION_TEMPERATURE = 0
 
-    in_progress = False
+    current_position = start_world_movement_random("the_great_pug")
+
     while True:
         audio = await active_listening(IDLE_MESSAGE)
 
@@ -70,20 +73,15 @@ async def main():
 
             if text:
                 print("Heard:", text)
-                if not in_progress:
-                    in_progress = True
 
-                    if 'help menu' in text.lower():
-                        await help_menu()
-                        in_progress = False
-                        print()
-                        continue
+                if 'help menu' in text.lower():
+                    await help_menu()
+                    print()
 
-                    elif await process_command(text.lower()):
-                        in_progress = False
-                        print()
-                        continue
+                elif await process_command(text.lower()):
+                    print()
 
+                else:
                     response = await process_and_log_message_generate_response(text, date)
                     # response = await generate_uwu(response)
                     response = end_sentence(response)
@@ -96,18 +94,18 @@ async def main():
 
                     print(f"Roka: {response} | Request number: {number_of_requests}\n")
                     number_of_requests += 1
-                    in_progress = False
-                else:
-                    CLIENT.send_message("/chatbox/typing", False)
-                    in_progress = False
-                    print()
-
+                    RELOCATION_TEMPERATURE += 1
             else:
                 CLIENT.send_message("/chatbox/typing", False)
                 print()
 
         else:
+            RELOCATION_TEMPERATURE += 5
             print()
+
+        if RELOCATION_TEMPERATURE > 150:
+            RELOCATION_TEMPERATURE = 0
+            await start_world_movement_random("the_great_pug", current_position)
 
 
 async def main_loop():

@@ -58,7 +58,7 @@ async def help_menu():
     Returns:
     - None
     """
-    print("Help menu activated!")
+    print("\nHelp menu activated!")
 
     while True:
         audio = await active_listening(MENU_MESSAGE)

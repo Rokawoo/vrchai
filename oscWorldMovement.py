@@ -28,8 +28,14 @@ Last Updated:
     11/20/2023
 """
 
+from pythonosc.udp_client import SimpleUDPClient
+
+from controlVariables import HOST, PORT
+
+CLIENT = SimpleUDPClient(HOST, PORT)
+
+import asyncio
 import random
-import time
 
 import cv2
 import mss
@@ -37,13 +43,12 @@ import pydirectinput
 import win32api
 import win32con
 from pythonosc.udp_client import SimpleUDPClient
-
-from controlVariables import HOST, PORT, AWAITING_MOVEMENT
+from controlVariables import HOST, PORT
 
 CLIENT = SimpleUDPClient(HOST, PORT)
 
 
-def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multiplier=10, sensitivity=1.0):
+async def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multiplier=10, sensitivity=1.0):
     """
     Move the cursor smoothly to a specified destination on the screen.
 
@@ -75,33 +80,28 @@ def move_cursor_smoothly(destination_x, destination_y, duration=2, steps_multipl
 
         pydirectinput.moveTo(new_x, new_y)
 
-        time.sleep(duration / steps)
+        await asyncio.sleep(duration / steps)
 
 
-def click():
+async def click():
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-    time.sleep(0.01)
+    await asyncio.sleep(0.01)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
 
 
-def respawn():
-    """
-    Respawn function to reset the virtual environment.
-    """
+async def respawn():
     pydirectinput.press('esc')
     pydirectinput.moveTo(900, 815)
-    click()
+    await click()
 
 
-def the_great_pug_position_normalization():
-    """
-    """
+async def the_great_pug_position_normalization():
     sct = mss.mss()
     while True:
-        respawn()
-        time.sleep(0.1)
-        move_cursor_smoothly(960, 9999, 1, 1)
-        move_cursor_smoothly(960, -380, 1, 1)
+        await respawn()
+        await asyncio.sleep(0.1)
+        await move_cursor_smoothly(960, 9999, 1, 1)
+        await move_cursor_smoothly(960, -380, 1, 1)
         sct.shot(output='normalization_temp.png')
         frame = cv2.imread('normalization_temp.png')
 
@@ -111,31 +111,40 @@ def the_great_pug_position_normalization():
             break
 
 
-def the_great_pug_position_1():
+async def the_great_pug_position_1():
     CLIENT.send_message("/input/TurnLeft", 1)
-    time.sleep(1.5)
+    await asyncio.sleep(1.5)
     CLIENT.send_message("/input/TurnLeft", 0)
 
 
-def set_time_to_move():
-    global AWAITING_MOVEMENT
-    AWAITING_MOVEMENT = False
-    wait_time = random.randint(240, 300)
-    time.sleep(wait_time)
-    AWAITING_MOVEMENT = True
-
-
-def start_world_movement(world):
-    global AWAITING_MOVEMENT
+async def start_world_movement_random(world, current_position_number=0):
+    possible_positions = {1, 2, 3}
+    if current_position_number != 0:
+        possible_positions.remove(current_position_number)
+    next_position_number = random.choice(list(possible_positions))
 
     world_position_normalization = globals()[f"{world}_position_normalization"]
-    world_position = globals()[f"{world}_position_{random.randint(1, 3)}"]
-    world_position_normalization()
-    world_position()
+    world_position = globals()[f"{world}_position_{next_position_number}"]
+    await world_position_normalization()
+    await world_position()
 
-    set_time_to_move()
+    return next_position_number
 
 
-while True:
-    the_great_pug_position_normalization()
-    break
+async def start_world_movement(world, next_position_number):
+    world_position_normalization = globals()[f"{world}_position_normalization"]
+    world_position = globals()[f"{world}_position_{next_position_number}"]
+    await world_position_normalization()
+    await world_position()
+
+    return next_position_number
+
+
+async def main():
+    while True:
+        await the_great_pug_position_normalization()
+        break
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
