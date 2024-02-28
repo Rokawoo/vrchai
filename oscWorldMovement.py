@@ -33,12 +33,6 @@ Last Updated:
     2/26/2024
 """
 
-from pythonosc.udp_client import SimpleUDPClient
-
-from controlVariables import HOST, PORT
-
-CLIENT = SimpleUDPClient(HOST, PORT)
-
 import asyncio
 import random
 
@@ -47,8 +41,9 @@ import mss
 import pydirectinput
 import win32api
 import win32con
-import oscMovement
 from pythonosc.udp_client import SimpleUDPClient
+
+import oscMovement
 from controlVariables import HOST, PORT
 
 CLIENT = SimpleUDPClient(HOST, PORT)
@@ -106,6 +101,7 @@ async def respawn():
     pydirectinput.moveTo(900, 815)
     await click()
 
+
 async def capture_frame_and_pixel_color(y, x):
     mss.mss().shot(output='normalization_temp.png')
     frame = cv2.imread('normalization_temp.png')
@@ -122,14 +118,14 @@ async def the_great_pug_position_normalization():
     await move_cursor_smoothly(960, -9999, 1, 1)
 
     while True:
+        await asyncio.sleep(0.15)
         pixel_color = await capture_frame_and_pixel_color(975, 665)
-        r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
-        if (197 < r < 209) and (187 < g < 199) and (154 < b < 166):
-            while True:
+        r, g, b = pixel_color[::-1]
+        if 197 < r < 209 and 187 < g < 199 and 154 < b < 166:
+            for _ in range(30):
                 pixel_color = await capture_frame_and_pixel_color(1079, 1)
-                r, g, b = pixel_color[2], pixel_color[1], pixel_color[0]
-                print(r, g, b)
-                if (36 < r < 54) and (26 < g < 42) and (14 < b < 29):
+                r, g, b = pixel_color[::-1]
+                if 36 < r < 54 and 26 < g < 42 and 14 < b < 29:
                     await move_cursor_smoothly(960, 1600, 1, 1)
                     await oscMovement.forward_move(1)
                     await oscMovement.left_turn_free(0.3377)
@@ -137,9 +133,9 @@ async def the_great_pug_position_normalization():
                     await oscMovement.left_turn_free(0.015)
                     await oscMovement.right_move(0.06)
                     return None
-                await oscMovement.right_turn_free(0.0001)
+                await move_cursor_smoothly(962, 540, 1, 1)
+            continue
         await respawn()
-        await asyncio.sleep(0.15)
 
 
 async def the_great_pug_position_1():
@@ -180,7 +176,6 @@ async def start_world_movement_random(world, current_position_number=0, override
 
 async def main():
     await start_world_movement_random("the_great_pug", 0, 1)
-
 
 
 if __name__ == "__main__":
