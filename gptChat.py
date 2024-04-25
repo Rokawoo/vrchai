@@ -58,6 +58,17 @@ def get_current_date():
     timezone_obj = timezone('US/Eastern')
     return f'Today is {datetime.now(timezone_obj).strftime("%a %B %d %Y, %H:%M")}'
 
+def unload_combined_message_history(personality, date, active_message, message_history, response_history):
+    messages = [{"role": "system", "content": f"{personality}\n16. {date}"}]
+
+    for response, message in zip(response_history, message_history):
+        messages.append({"role": "user", "content": message})
+        messages.append({"role": "assistant", "content": response})
+
+    messages.append({"role": "user", "content": active_message})
+
+    return messages
+
 
 async def process_and_log_message_generate_response(message, date):
     """

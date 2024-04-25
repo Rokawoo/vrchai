@@ -72,6 +72,10 @@ async def awoo_face():
     CLIENT.send_message("/avatar/parameters/Faces", 0)
 
 
+#recognizer.adjust_for_ambient_noise(source, duration=1)
+#recognizer.energy_threshold += 80
+#print("Calibrated energy threshold:", recognizer.energy_threshold)
+
 async def active_listening(message):
     """
     Perform active listening to capture audio from the microphone.
