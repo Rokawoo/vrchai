@@ -29,7 +29,7 @@ Note:
     Ensure all dependencies are installed before running the script.
 
 Author:
-    Augustus Sroka
+    Rokawoo
 
 Last Updated:
     11/20/2023
