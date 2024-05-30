@@ -16,7 +16,7 @@ Created VR ChAI, a voice / visual-driven AI virtual player-bot for VR Chat, simu
 behavior for immersive virtual interactions, employing live Computer Vision (CV), Speech Recognition & Synthesis,
 Retrieval-based Voice Conversion (RVC), and the PythonOSC network protocol to enhance the virtual experience.
 
-**Project Media:**
+**Project Media**
 
 [Object Detection](https://github.com/Rokawoo/vrchai/assets/129356996/d7fe6295-f25a-4ea0-8fd8-492ddd6f697b)
 
